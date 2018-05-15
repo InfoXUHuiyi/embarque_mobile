@@ -7,11 +7,12 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(indices = {@Index(value = "id", unique = true)})
 public class Send {
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    public long id;
 
-    public String sms;
-    public String cle1;
-    public String envoye;
-    public String ack_recu;
-    public String code_recu;
+    public String content;
+//    public String cle1;
+//    public String envoye;
+//    public String ack_recu;
+//    public String code_recu;
+
 }

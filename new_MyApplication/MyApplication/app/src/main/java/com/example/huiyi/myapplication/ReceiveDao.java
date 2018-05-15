@@ -10,10 +10,10 @@ import java.util.List;
 @Dao
 public interface ReceiveDao {
     @Insert
-    public void insertReceivedSMS(Receive... sms);
+    public void insertReceivedSMS(Receive sms);
 
     @Update
-    public void updateReceivedSMS(Receive... sms);
+    public void updateReceivedSMS(Receive sms);
 
     @Query("SELECT * FROM receive WHERE receive.sid = :sid")
     List<Receive> getReceivedSMSById(int sid);

@@ -10,11 +10,17 @@ import java.util.List;
 @Dao
 public interface SendDao {
     @Insert
-    public void insertSentSMS(Send sms);
+    public long[] insertSentSMS(Send... sms);
 
     @Update
     public void updateSentSMS(Send sms);
 
     @Query("SELECT * FROM send WHERE send.id = :id")
-    List<Send> getSentSMSById(int id);
+    List<Send> getSentSMSById(long id);
+
+    @Query("SELECT * FROM send WHERE send.content = :content")
+    List<Send> getId(String content);
+
+    @Query("SELECT * FROM send")
+    List<Send> getAllSMS();
 }

@@ -16,5 +16,5 @@ public interface StatusDao {
     public void updateStatus(Status status);
 
     @Query("SELECT * FROM status WHERE status.sid = :sid")
-    List<Status> getStatusById(int sid);
+    List<Status> getStatusById(long sid);
 }

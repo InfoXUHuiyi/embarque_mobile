@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {Send.class, Receive.class, Status.class}, version = 1)
+@Database(entities = {Send.class, Receive.class, Status.class}, version = 3, exportSchema = false)
 public abstract class SMSDatabase extends RoomDatabase{
     public abstract SendDao sendDao();
     public abstract ReceiveDao receiveDao();

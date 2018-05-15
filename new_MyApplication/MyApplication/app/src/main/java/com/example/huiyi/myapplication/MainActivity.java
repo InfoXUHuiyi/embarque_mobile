@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -18,17 +19,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.List;
+
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.SEND_SMS;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class MainActivity extends AppCompatActivity {
+    private SMSDatabase smsdb;
 
     private static final String TAG = "MyApplication";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        smsdb = SMSDatabase.getDatabase(getApplicationContext());
 
         final EditText addrText = (EditText) findViewById(R.id.location);
         final Button openSMSButton = (Button) findViewById(R.id.open_sms);
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String content = addrText.getText().toString();
+
                 Intent smsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:5554"));
                 smsIntent.putExtra("sms_body", content);
 
@@ -130,7 +136,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendSMS(String content, String number) {
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(number, null, content, null, null);
+        final Send send = new Send();
+        send.content = content;
+
+        new AsyncTask<Send, Void, Void>() {
+            @Override
+            protected Void doInBackground(Send... sends) {
+                long[] result = smsdb.sendDao().insertSentSMS(sends);
+                send.id = result[0];
+
+                return null;
+            }
+        }.execute(send);
+
+
+        final SmsManager smsManager = SmsManager.getDefault();
+        new AsyncTask<String, Void, Void>() {
+            @Override
+            protected Void doInBackground(String... numbers) {
+                //int sid = smsdb.sendDao().getId().get(0).content;
+                String newcontent = "from database:" + smsdb.sendDao().getSentSMSById(send.id).get(0).content;
+
+                smsManager.sendTextMessage(numbers[0], null, newcontent, null, null);
+
+                return null;
+            }
+        }.execute(number);
     }
 }

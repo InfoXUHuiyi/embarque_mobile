@@ -10,7 +10,8 @@ public class Receive {
     public int id;
 
     public int sid;
-    public String sms;
+    public String number;
+    public String content;
     public String recu;
     public String ack;
     public String cle2;

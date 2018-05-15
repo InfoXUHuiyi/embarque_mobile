@@ -10,6 +10,6 @@ public class Status {
     public int id;
 
     public int sid;
-    public String sms;
+    public String content;
     public String status;
 }
