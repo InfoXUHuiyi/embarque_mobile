@@ -10,8 +10,8 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
@@ -19,9 +19,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.List;
-
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.RECEIVE_SMS;
 import static android.Manifest.permission.SEND_SMS;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -29,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private SMSDatabase smsdb;
 
     private static final String TAG = "MyApplication";
+//    private Uri SMS_INBOX = Uri.parse("content://sms/");
+//    StringBuilder smsBuilder = new StringBuilder();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         final EditText addrText = (EditText) findViewById(R.id.location);
         final Button openSMSButton = (Button) findViewById(R.id.open_sms);
+
         openSMSButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         final Button sendSMSButton = (Button) findViewById(R.id.send_sms);
         sendSMSButton.setOnClickListener(new Button.OnClickListener() {
 
@@ -104,10 +108,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void smsButtonClicked() {
+//        if ((ContextCompat.checkSelfPermission(MainActivity.this, SEND_SMS) != PERMISSION_GRANTED) ||
+//                (ContextCompat.checkSelfPermission(MainActivity.this, READ_CONTACTS) != PERMISSION_GRANTED)) {
+//            ActivityCompat.requestPermissions(MainActivity.this,
+//                    new String[]{SEND_SMS, READ_CONTACTS},
+//                    REQUEST_SEND_SMS);
+//        } else {
+//            pickContact();
+//        }
+
         if ((ContextCompat.checkSelfPermission(MainActivity.this, SEND_SMS) != PERMISSION_GRANTED) ||
-                (ContextCompat.checkSelfPermission(MainActivity.this, READ_CONTACTS) != PERMISSION_GRANTED)) {
+                (ContextCompat.checkSelfPermission(MainActivity.this, READ_CONTACTS) != PERMISSION_GRANTED) ||
+                (ContextCompat.checkSelfPermission(MainActivity.this, RECEIVE_SMS) != PERMISSION_GRANTED)) {
             ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[] { SEND_SMS, READ_CONTACTS },
+                    new String[]{SEND_SMS, READ_CONTACTS, RECEIVE_SMS},
                     REQUEST_SEND_SMS);
         } else {
             pickContact();
@@ -120,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 ContentResolver cr = getContentResolver();
                 Uri dataUri = data.getData();
-                String[] projection = { ContactsContract.Contacts._ID };
+                String[] projection = {ContactsContract.Contacts._ID};
                 Cursor cursor = cr.query(dataUri, projection, null, null, null);
 
                 if (null != cursor && cursor.moveToFirst()) {
@@ -138,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, e.toString());
             }
         }
+
     }
 
     @Override
@@ -146,11 +161,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Permission denied " + requestCode, Toast.LENGTH_SHORT).show();
             return;
         }
-
-        switch(requestCode) {
+        switch (requestCode) {
             case REQUEST_SEND_SMS:
                 pickContact();
                 break;
+
             default:
                 Toast.makeText(getApplicationContext(), "WRONG REQUEST CODE in Permissions", Toast.LENGTH_SHORT).show();
         }
