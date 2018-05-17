@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+import android.widget.Toast;
 
 public class SmsReceiver extends BroadcastReceiver {
 
@@ -42,6 +43,8 @@ public class SmsReceiver extends BroadcastReceiver {
                         }else if(content.contains("KEY:")){
                             //解密方法写在这里
 
+
+                            Toast.makeText(context,"new sms", Toast.LENGTH_LONG).show();
                         }
                     abortBroadcast();
                 }
