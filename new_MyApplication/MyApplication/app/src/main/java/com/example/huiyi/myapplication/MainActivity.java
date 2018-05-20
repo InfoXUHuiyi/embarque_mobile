@@ -151,10 +151,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "No number in contact", Toast.LENGTH_SHORT).show();
                     } else {
                         final EditText addrText = (EditText) findViewById(R.id.location);
-                        //sendSMS(addrText.getText().toString(), number);
-                        //sendSMS(addrText.getText().toString(), number,"CODESMS", 0);
-                        int sid = 1;
-                        sendSMS(addrText.getText().toString(), number,"KEY", sid);
+                        sendSMS(addrText.getText().toString(), number);
                     }
                 }
             } catch (Exception e) {
@@ -200,48 +197,31 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    private void sendSMS(String content, String number, String type, int sid) {
+    private void sendSMS(String content, String number) {
         final Send send = new Send();
         final SmsManager smsManager = SmsManager.getDefault();
-        if(type == "CODESMS") {
-            send.cle1 = (int) (Math.random() * 11);
-            send.content = encrypt(content, send.cle1);
+        send.cle1 = (int) (Math.random() * 11);
+        send.content = encrypt(content, send.cle1);
 
-            new AsyncTask<Send, Void, Void>() {
-                @Override
-                protected Void doInBackground(Send... sends) {
-                    long[] result = smsdb.sendDao().insertSentSMS(sends);
-                    send.id = result[0];
+        new AsyncTask<Send, Void, Void>() {
+            @Override
+            protected Void doInBackground(Send... sends) {
+                long[] result = smsdb.sendDao().insertSentSMS(sends);
+                send.id = result[0];
 
-                    return null;
-                }
-            }.execute(send);
+                return null;
+            }
+        }.execute(send);
 
-            new AsyncTask<String, Void, Void>() {
-                @Override
-                protected Void doInBackground(String... numbers) {
-                    //int sid = smsdb.sendDao().getId().get(0).content;
-                    String newcontent = "from database:" + smsdb.sendDao().getSentSMSById(send.id).get(0).content + "/?" + send.id;
-                    smsManager.sendTextMessage(numbers[0], null, newcontent, null, null);
+        new AsyncTask<String, Void, Void>() {
+            @Override
+            protected Void doInBackground(String... numbers) {
+                //int sid = smsdb.sendDao().getId().get(0).content;
+                String newcontent = "from database:" + smsdb.sendDao().getSentSMSById(send.id).get(0).content + "/?" + send.id;
+                smsManager.sendTextMessage(numbers[0], null, newcontent, null, null);
 
-                    return null;
-                }
-            }.execute(number);
-        }else if(type == "KEY"){
-            send.id = sid;
-            new AsyncTask<String, Void, Void>() {
-                @Override
-                protected Void doInBackground(String... numbers) {
-                    //int sid = smsdb.sendDao().getId().get(0).content;
-                    int key = smsdb.sendDao().getSentSMSById(send.id).get(0).cle1;
-                    smsManager.sendTextMessage(numbers[0], null, String.valueOf(key), null, null);
-
-                    return null;
-                }
-            }.execute(number);
-        }
-        else{
-            smsManager.sendTextMessage(number, null, content, null, null);
-        }
+                return null;
+            }
+        }.execute(number);
     }
 }

@@ -3,6 +3,7 @@ package com.example.huiyi.myapplication;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
@@ -10,7 +11,7 @@ import android.telephony.SmsMessage;
 import android.widget.Toast;
 
 public class SmsReceiver extends BroadcastReceiver {
-
+    private SMSDatabase smsdb;
     private static final String TAG ="SmsService";
     private String content;
     private String sender;
@@ -37,11 +38,12 @@ public class SmsReceiver extends BroadcastReceiver {
                     adrSender = sender;
 
                         if(!content.contains("ACK:messege received") && !content.contains("KEY:")){
-                            sendSMS("ACK:messege received",sender);
+                            sendSMS("ACK:messege received",sender, 0);
                         }else if(content.contains("ACK:messege received")){
                             //将10换成我们加密的密钥
-                            String info = "KEY:"+"10";
-                            sendSMS(info,sender);
+                            String info = "KEY:";
+                            int sid = 1;
+                            sendSMS(info,sender, sid);
                         }else if(content.contains("KEY:")){
                             //解密方法写在这里
                             /**
@@ -80,9 +82,26 @@ public class SmsReceiver extends BroadcastReceiver {
         return new String(array);
     }
 
-    private void sendSMS(String content, String number) {
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(number, null, content, null, null);
+    private void sendSMS(String content, String number, int sid) {
+        final SmsManager smsManager = SmsManager.getDefault();
+        if(sid > 0){
+            final Send send = new Send();
+            send.content = "KEY:";
+            send.id = sid;
+            new AsyncTask<String, Void, Void>() {
+                @Override
+                protected Void doInBackground(String... numbers) {
+                    //int sid = smsdb.sendDao().getId().get(0).content;
+                    String key = send.content + String.valueOf(smsdb.sendDao().getSentSMSById(send.id).get(0).cle1);
+                    smsManager.sendTextMessage(numbers[0], null, key, null, null);
+
+                    return null;
+                }
+            }.execute(number);
+        }
+        else{
+            smsManager.sendTextMessage(number, null, content, null, null);
+        }
     }
 
 }
