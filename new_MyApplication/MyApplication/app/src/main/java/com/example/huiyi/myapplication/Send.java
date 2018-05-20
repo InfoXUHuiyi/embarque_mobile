@@ -10,7 +10,7 @@ public class Send {
     public long id;
 
     public String content;
-//    public String cle1;
+    public int cle1;
 //    public String envoye;
 //    public String ack_recu;
 //    public String code_recu;

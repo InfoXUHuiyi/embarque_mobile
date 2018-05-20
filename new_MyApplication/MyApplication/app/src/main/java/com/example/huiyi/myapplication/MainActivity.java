@@ -193,7 +193,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendSMS(String content, String number) {
         final Send send = new Send();
-        send.content = encrypt(content,8);
+        send.cle1 = (int)(Math.random()*11);
+        send.content = encrypt(content,send.cle1);
+
 
         new AsyncTask<Send, Void, Void>() {
             @Override

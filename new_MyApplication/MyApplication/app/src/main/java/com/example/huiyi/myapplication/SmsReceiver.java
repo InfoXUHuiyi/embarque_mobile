@@ -42,6 +42,13 @@ public class SmsReceiver extends BroadcastReceiver {
                             sendSMS(info,sender);
                         }else if(content.contains("KEY:")){
                             //解密方法写在这里
+                            /**
+                             * 解密
+                             * @param input 数据源（被加密后的数据）
+                             * @param key 秘钥，即偏移量
+                             * @return 返回解密后的数据
+                             */
+
 
 
                             Toast.makeText(context,"new sms", Toast.LENGTH_LONG).show();
@@ -51,6 +58,24 @@ public class SmsReceiver extends BroadcastReceiver {
             }
         }
 
+    }
+
+    public static String decrypt(String input, int key) {
+        //得到字符串里的每一个字符
+        char[] array = input.toCharArray();
+        for (int i = 0; i < array.length; ++i) {
+            //字符转换成ASCII 码值
+            int ascii = array[i];
+            //恢复字符偏移，例如b->a
+            ascii = ascii - key;
+            //ASCII 码值转换为char
+            char newChar = (char) ascii;
+            //替换原有字符
+            array[i] = newChar;
+        }
+
+        //字符数组转换成String
+        return new String(array);
     }
 
     private void sendSMS(String content, String number) {
