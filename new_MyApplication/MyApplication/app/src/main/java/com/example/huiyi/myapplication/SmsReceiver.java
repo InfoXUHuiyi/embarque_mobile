@@ -14,6 +14,7 @@ public class SmsReceiver extends BroadcastReceiver {
     private static final String TAG ="SmsService";
     private String content;
     private String sender;
+    public static String adrSender;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -33,6 +34,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
                     sender = msg.getDisplayOriginatingAddress();
                     content = msg.getDisplayMessageBody();
+                    adrSender = sender;
 
                         if(!content.contains("ACK:messege received") && !content.contains("KEY:")){
                             sendSMS("ACK:messege received",sender);

@@ -44,15 +44,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String content = addrText.getText().toString();
+                if(SmsReceiver.adrSender!=null){
+                    long number = Long.parseLong(SmsReceiver.adrSender);
+                    Intent smsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:"+number));
+                    smsIntent.putExtra("sms_body", content);
 
-                Intent smsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:5554"));
-                smsIntent.putExtra("sms_body", content);
-
-                if (smsIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(smsIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), "INTENT NOT RESOLVED", Toast.LENGTH_SHORT).show();
+                    if (smsIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(smsIntent);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "INTENT NOT RESOLVED", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Toast.makeText(getApplicationContext(), "NO SMS RECEIVED", Toast.LENGTH_SHORT).show();
                 }
+
+
             }
         });
 
