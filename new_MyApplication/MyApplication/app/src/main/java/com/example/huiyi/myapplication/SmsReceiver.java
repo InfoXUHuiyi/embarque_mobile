@@ -17,6 +17,7 @@ public class SmsReceiver extends BroadcastReceiver {
     private String content;
     private String sender;
     public static String adrSender;
+    private static String messagecode = "";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -25,6 +26,7 @@ public class SmsReceiver extends BroadcastReceiver {
         Bundle bundle = intent.getExtras();//get content of ntent
         SmsMessage msg = null;
         smsdb = SMSDatabase.getDatabase(context);
+
 
         if (intent.getAction().equals(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)){
             if (bundle != null) {
@@ -40,6 +42,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     adrSender = sender;
 
                         if(!content.contains("ACK:messege received /?") && !content.contains("KEY /?")){
+                            messagecode = content;
                             int begin = content.indexOf("?")+1;
                             String subContent = content.substring(begin);
                             String ack = "ACK:messege received /?"+subContent;
@@ -52,7 +55,7 @@ public class SmsReceiver extends BroadcastReceiver {
 //                            System.out.println(subContent);
 //                            System.out.println(sid);
                             sendSMS(info,sender, sid);
-                        }else if(content.contains("KEY /?") && !content.contains("ACK:messege received /?")){
+                        }else if(content.contains("KEY") && !content.contains("ACK:messege received")){
                             //解密方法写在这里
                             /**
                              * 解密
@@ -60,6 +63,8 @@ public class SmsReceiver extends BroadcastReceiver {
                              * @param key 秘钥，即偏移量
                              * @return 返回解密后的数据
                              */
+//                            System.out.println(messagecode);
+
                             int begin = content.indexOf("?")+1;
                             int end = content.indexOf(":");
                             String subContent1 = content.substring(begin,end);
@@ -68,13 +73,14 @@ public class SmsReceiver extends BroadcastReceiver {
                             int clef = Integer.parseInt(subContent2);
 //                            System.out.println("{"+sid+"}");
 //                            System.out.println("{"+clef+"}");
-                            
-
-
-
-
-
-//                            Toast.makeText(context,"new sms", Toast.LENGTH_LONG).show();
+                            int mesbegin = messagecode.indexOf(":")+1;
+                            int mesend = messagecode.indexOf("/");
+//                            int meskey = messagecode.indexOf("?");
+                            String messageWorld = messagecode.substring(mesbegin,mesend);
+//                            int messageKey = Integer.parseInt(messagecode.substring(meskey)+1);
+//                            if(clef == messageKey){
+                                Toast.makeText(context,decrypt(messageWorld,clef), Toast.LENGTH_LONG).show();
+//                            }
                         }
                     abortBroadcast();
                 }
