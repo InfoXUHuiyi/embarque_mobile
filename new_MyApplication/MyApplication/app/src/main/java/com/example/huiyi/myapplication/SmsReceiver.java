@@ -8,10 +8,11 @@ import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import android.widget.Toast;
 
 public class SmsReceiver extends BroadcastReceiver {
-    private SMSDatabase smsdb;
+    private SMSDatabase smsdb;// = SMSDatabase.getDatabase(context);
     private static final String TAG ="SmsService";
     private String content;
     private String sender;
@@ -38,14 +39,20 @@ public class SmsReceiver extends BroadcastReceiver {
                     content = msg.getDisplayMessageBody();
                     adrSender = sender;
 
-                        if(!content.contains("ACK:messege received") && !content.contains("KEY:")){
-                            sendSMS("ACK:messege received",sender, 0);
-                        }else if(content.contains("ACK:messege received")){
-                            //将10换成我们加密的密钥
-                            String info = "KEY:";
-                            int sid = 1;
+                        if(!content.contains("ACK:messege received /?") && !content.contains("KEY /?")){
+                            int begin = content.indexOf("?")+1;
+                            String subContent = content.substring(begin);
+                            String ack = "ACK:messege received /?"+subContent;
+                            sendSMS(ack,sender, 0);
+                        }else if(content.contains("ACK:messege received /?") && !content.contains("KEY /?")){
+                            int begin = content.indexOf("?")+1;
+                            String subContent = content.substring(begin);
+                            int sid = Integer.parseInt(subContent);
+                            String info = "KEY /?"+subContent+":";
+//                            System.out.println(subContent);
+//                            System.out.println(sid);
                             sendSMS(info,sender, sid);
-                        }else if(content.contains("KEY:")){
+                        }else if(content.contains("KEY /?") && !content.contains("ACK:messege received /?")){
                             //解密方法写在这里
                             /**
                              * 解密
@@ -53,10 +60,21 @@ public class SmsReceiver extends BroadcastReceiver {
                              * @param key 秘钥，即偏移量
                              * @return 返回解密后的数据
                              */
+                            int begin = content.indexOf("?")+1;
+                            int end = content.indexOf(":");
+                            String subContent1 = content.substring(begin,end);
+                            String subContent2 = content.substring(end+1);
+                            int sid = Integer.parseInt(subContent1);
+                            int clef = Integer.parseInt(subContent2);
+//                            System.out.println("{"+sid+"}");
+//                            System.out.println("{"+clef+"}");
+                            
 
 
 
-                            Toast.makeText(context,"new sms", Toast.LENGTH_LONG).show();
+
+
+//                            Toast.makeText(context,"new sms", Toast.LENGTH_LONG).show();
                         }
                     abortBroadcast();
                 }
@@ -87,7 +105,8 @@ public class SmsReceiver extends BroadcastReceiver {
         final SmsManager smsManager = SmsManager.getDefault();
         if(sid > 0){
             final Send send = new Send();
-            send.content = "KEY:";
+//            send.content = "KEY:";
+            send.content = content;
             send.id = sid;
             new AsyncTask<String, Void, Void>() {
                 @Override

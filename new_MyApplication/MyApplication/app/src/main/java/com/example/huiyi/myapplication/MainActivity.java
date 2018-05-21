@@ -1,5 +1,6 @@
 package com.example.huiyi.myapplication;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
