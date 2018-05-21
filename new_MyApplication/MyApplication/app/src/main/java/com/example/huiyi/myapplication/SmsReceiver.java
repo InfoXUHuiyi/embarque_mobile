@@ -23,6 +23,7 @@ public class SmsReceiver extends BroadcastReceiver {
 //        Toast.makeText(context,"new sms", Toast.LENGTH_LONG).show();
         Bundle bundle = intent.getExtras();//get content of ntent
         SmsMessage msg = null;
+        smsdb = SMSDatabase.getDatabase(context);
 
         if (intent.getAction().equals(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)){
             if (bundle != null) {
