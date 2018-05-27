@@ -18,6 +18,7 @@ public class SmsReceiver extends BroadcastReceiver {
     private String sender;
     public static String adrSender;
     private static String messagecode = "";
+//    public static String smsRecu = "";
 
     @Override
     public void onReceive(Context context, Intent intent) {

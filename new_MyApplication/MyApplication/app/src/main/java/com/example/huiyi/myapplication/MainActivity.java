@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private SMSDatabase smsdb;
 
     private static final String TAG = "MyApplication";
-//    private Uri SMS_INBOX = Uri.parse("content://sms/");
-//    StringBuilder smsBuilder = new StringBuilder();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +36,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         smsdb = SMSDatabase.getDatabase(getApplicationContext());
 
-        final EditText addrText = (EditText) findViewById(R.id.location);
+        final EditText text = (EditText) findViewById(R.id.location);
         final Button openSMSButton = (Button) findViewById(R.id.open_sms);
+        final Button openMapButton = (Button) findViewById(R.id.open_map);
+        openMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mapButtonClicked();
+            }
+        });
 
         openSMSButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String content = addrText.getText().toString();
+                String content = text.getText().toString();
                 if(SmsReceiver.adrSender!=null){
                     long number = Long.parseLong(SmsReceiver.adrSender);
                     Intent smsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:"+number));
@@ -132,6 +137,35 @@ public class MainActivity extends AppCompatActivity {
                     REQUEST_SEND_SMS);
         } else {
             pickContact();
+        }
+    }
+
+    private void mapButtonClicked(){
+        if(SmsReceiver.adrSender!=null){
+            //when click this button, open map
+            try {
+                //receiver's number
+                long number = Long.parseLong(SmsReceiver.adrSender);
+                //get receiver's address
+                String address = "";
+
+
+
+
+
+
+
+                //open map to look receiver's address when click this button
+                Intent geoIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + address));
+
+                if (geoIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(geoIntent);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "NO RECEIVER", Toast.LENGTH_SHORT).show();
         }
     }
 
