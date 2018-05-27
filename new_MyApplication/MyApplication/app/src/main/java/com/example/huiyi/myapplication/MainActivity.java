@@ -141,17 +141,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void mapButtonClicked(){
-        if(SmsReceiver.adrSender!=null){
+        if ((ContextCompat.checkSelfPermission(MainActivity.this, READ_CONTACTS) != PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[] { READ_CONTACTS },
+                    REQUEST_ADDRESS);
+        } else {
+            findAddressInContacts();
+        }
+
+        /*if(SmsReceiver.adrSender!=null){
             //when click this button, open map
             try {
                 //receiver's number
                 long number = Long.parseLong(SmsReceiver.adrSender);
                 //get receiver's address
                 String address = "";
-
-
-
-
 
 
 
@@ -166,7 +170,17 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             Toast.makeText(getApplicationContext(), "NO RECEIVER", Toast.LENGTH_SHORT).show();
-        }
+        }*/
+    }
+
+    private void findAddressInContacts() {
+        // Create Intent object for picking data from Contacts database
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                ContactsContract.Contacts.CONTENT_URI);
+
+        // Use intent to start Contacts application
+        // Variable PICK_CONTACT_REQUEST identifies this operation
+        startActivityForResult(intent, PICK_CONTACT_REQUEST_MAP);
     }
 
     @Override
@@ -181,17 +195,61 @@ public class MainActivity extends AppCompatActivity {
                 if (null != cursor && cursor.moveToFirst()) {
                     String id = cursor
                             .getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                    String number = getPhoneNumber(id);
-                    if (number == null) {
-                        Toast.makeText(getApplicationContext(), "No number in contact", Toast.LENGTH_SHORT).show();
-                    } else {
-                        final EditText addrText = (EditText) findViewById(R.id.location);
-                        sendSMS(addrText.getText().toString(), number);
-                    }
+                        String number = getPhoneNumber(id);
+                        if (number == null) {
+                            Toast.makeText(getApplicationContext(), "No number in contact", Toast.LENGTH_SHORT).show();
+                        } else {
+                            final EditText addrText = (EditText) findViewById(R.id.location);
+                            sendSMS(addrText.getText().toString(), number);
+                        }
                 }
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
             }
+        }else if(resultCode == Activity.RESULT_OK
+                && requestCode == PICK_CONTACT_REQUEST_MAP){
+            // These details are covered in the lesson on ContentProviders
+            ContentResolver cr = getContentResolver();
+            Uri dataUri = data.getData();
+            String[] projection = { ContactsContract.Contacts._ID};
+            Cursor cursor = cr.query(dataUri, projection, null, null, null);
+
+            if (null != cursor && cursor.moveToFirst()) {
+                String id = cursor
+                        .getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                String where = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE
+                        + " = ?";
+                String[] whereParameters = new String[] { id,
+                        ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE };
+                Cursor addrCur = cr.query(ContactsContract.Data.CONTENT_URI, null, where,
+                        whereParameters, null);
+
+                if (null != addrCur && addrCur.moveToFirst()) {
+                    String formattedAddress = addrCur
+                            .getString(addrCur
+                                    .getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS));
+
+                    if (null != formattedAddress) {
+
+                        // Process text for network transmission
+                        formattedAddress = formattedAddress.replace(' ', '+');
+
+                        // Create Intent object for starting Google Maps application
+                        Intent geoIntent = new Intent(
+                                android.content.Intent.ACTION_VIEW,
+                                Uri.parse("geo:0,0?q=" + formattedAddress));
+
+                        // Use the Intent to start Google Maps application using Activity.startActivity()
+                        startActivity(geoIntent);
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "User without address", Toast.LENGTH_SHORT).show();
+                }
+                if (null != addrCur)
+                    addrCur.close();
+            }
+            if (null != cursor)
+                cursor.close();
         }
 
     }
@@ -206,7 +264,9 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_SEND_SMS:
                 pickContact();
                 break;
-
+            case REQUEST_ADDRESS:
+                findAddressInContacts();
+                break;
             default:
                 Toast.makeText(getApplicationContext(), "WRONG REQUEST CODE in Permissions", Toast.LENGTH_SHORT).show();
         }
@@ -214,6 +274,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_SEND_SMS = 10;
     private static final int PICK_CONTACT_REQUEST = 20;
+    private static final int REQUEST_ADDRESS = 30;
+    private static final int PICK_CONTACT_REQUEST_MAP = 40;
 
     private void pickContact() {
         Intent i = new Intent(Intent.ACTION_PICK,
