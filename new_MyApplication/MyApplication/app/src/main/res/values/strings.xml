@@ -4,4 +4,7 @@
     <string name="send_sms">send sms</string>
     <string name="open_sms">open sms</string>
     <string name="open_map">open map</string>
+    <string name="check_sms">failed sms</string>
+    <string name="sms_failed">failed sent sms</string>
+    <string name="sms">sms</string>
 </resources>

@@ -43,13 +43,23 @@
             android:layout_centerHorizontal="true"/>
 
         <Button
-            android:id="@+id/open_map"
+            android:id="@+id/check_sms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/open_sms"
+            android:layout_centerHorizontal="true"
             android:layout_marginStart="0dp"
-            android:text="@string/open_map"
-            android:layout_centerHorizontal="true"/>
+            android:text="@string/check_sms" />
+
+        <Button
+        android:id="@+id/open_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/check_sms"
+        android:layout_marginStart="0dp"
+        android:text="@string/open_map"
+        android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

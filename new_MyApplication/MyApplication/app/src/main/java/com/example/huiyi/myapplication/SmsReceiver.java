@@ -38,16 +38,28 @@ public class SmsReceiver extends BroadcastReceiver {
 //                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //                    String receiveTime = format.format(date);
 
+                    //接收到信息的联系人号码
                     sender = msg.getDisplayOriginatingAddress();
+                    //接收到的信息内容
                     content = msg.getDisplayMessageBody();
                     adrSender = sender;
 
+                    //如果收到密文，则发送一个带有相同id的ACK
                         if(!content.contains("ACK:messege received /?") && !content.contains("KEY /?")){
                             messagecode = content;
                             int begin = content.indexOf("?")+1;
                             String subContent = content.substring(begin);
                             String ack = "ACK:messege received /?"+subContent;
                             sendSMS(ack,sender, 0);
+
+                            /*
+                            *   待完成：将密文存进数据库
+                            */
+
+
+
+
+                    //如果收到和自己发送的密文的id一样的ACK，那就发送相同id的密钥KEY
                         }else if(content.contains("ACK:messege received /?") && !content.contains("KEY /?")){
                             int begin = content.indexOf("?")+1;
                             String subContent = content.substring(begin);
@@ -56,8 +68,23 @@ public class SmsReceiver extends BroadcastReceiver {
 //                            System.out.println(subContent);
 //                            System.out.println(sid);
                             sendSMS(info,sender, sid);
+
+                            /*
+                             *   待完成：将接收到的ACK存进数据库
+                             */
+
+
+
+
+                    //如果收到对方发来的密钥，并且密钥id和收到的密文id一样，那就解密
                         }else if(content.contains("KEY") && !content.contains("ACK:messege received")){
-                            //解密方法写在这里
+                            /*
+                             *   待完成：将接收到的KEY存进数据库
+                             */
+
+
+
+
                             /**
                              * 解密
                              * @param input 数据源（被加密后的数据）
@@ -82,11 +109,15 @@ public class SmsReceiver extends BroadcastReceiver {
 //                            if(clef == messageKey){
                                 Toast.makeText(context,decrypt(messageWorld,clef), Toast.LENGTH_LONG).show();
 //                            }
+
+
                         }
                     abortBroadcast();
                 }
             }
         }
+
+
 
     }
 

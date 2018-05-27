@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private SMSDatabase smsdb;
 
     private static final String TAG = "MyApplication";
-
+    public static final String EXTRA_MESSAGE = "com.example.huiyi.myapplication";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +38,14 @@ public class MainActivity extends AppCompatActivity {
 
         final EditText text = (EditText) findViewById(R.id.location);
         final Button openSMSButton = (Button) findViewById(R.id.open_sms);
+        final Button CheckSmsButton = (Button)findViewById(R.id.check_sms);
+        CheckSmsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkResceiveSms();
+            }
+        });
+
         final Button openMapButton = (Button) findViewById(R.id.open_map);
         openMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +148,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void checkResceiveSms(){
+        Intent intent = new Intent(this, smsListActivity.class);
+        String message = getMessaage().toString();
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+    private StringBuilder getMessaage(){
+        /*
+            get information from database and put them in the stringBuilder
+         */
+        StringBuilder stringBuilder = new StringBuilder();
+        String meg1 = "sms1: hello world";
+        String meg2 = "sms2: how are you";
+        stringBuilder.append(meg1);
+        stringBuilder.append("\r\n");
+        stringBuilder.append(meg2);
+        stringBuilder.append("\r\n");
+//        Log.i("收到的短信",stringBuilder.toString());
+        return stringBuilder;
+    }
+
     private void mapButtonClicked(){
         if ((ContextCompat.checkSelfPermission(MainActivity.this, READ_CONTACTS) != PERMISSION_GRANTED)) {
             ActivityCompat.requestPermissions(MainActivity.this,
@@ -148,29 +177,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             findAddressInContacts();
         }
-
-        /*if(SmsReceiver.adrSender!=null){
-            //when click this button, open map
-            try {
-                //receiver's number
-                long number = Long.parseLong(SmsReceiver.adrSender);
-                //get receiver's address
-                String address = "";
-
-
-
-                //open map to look receiver's address when click this button
-                Intent geoIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + address));
-
-                if (geoIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(geoIntent);
-                }
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-            }
-        } else {
-            Toast.makeText(getApplicationContext(), "NO RECEIVER", Toast.LENGTH_SHORT).show();
-        }*/
     }
 
     private void findAddressInContacts() {
