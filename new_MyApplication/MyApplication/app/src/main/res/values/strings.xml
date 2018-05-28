@@ -4,8 +4,6 @@
     <string name="send_sms">send sms</string>
     <string name="open_sms">open sms</string>
     <string name="open_map">open map</string>
-    <string name="check_sms">failed sms</string>
-    <string name="sms_failed">failed sent sms</string>
     <string name="sms">sms</string>
     <string name="number">0612345678</string>
     <string name="sms_content">SMS content</string>
@@ -16,5 +14,6 @@
     <string name="see_details">see details</string>
     <string name="sms_id">1</string>
     <string name="decrypt_sms">decrypt sms</string>
+    <string name="check_sms">failed sms</string>
 
 </resources>

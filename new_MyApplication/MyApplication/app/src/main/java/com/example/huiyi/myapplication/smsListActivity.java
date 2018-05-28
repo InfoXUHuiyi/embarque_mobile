@@ -39,17 +39,6 @@ public class smsListActivity extends AppCompatActivity {
         // Capture the layout's TextView and set the string as its text
 
 
-
-        TextView textView = findViewById(R.id.textView2);
-        textView.setText(status);
-        final Button see = (Button)findViewById(R.id.see_details);
-        see.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToDetails();
-            }
-        });
-
         list_show = (ListView) this.findViewById(R.id.list_show);
         list_show.setOnItemClickListener(new list_listener());
 
@@ -83,14 +72,6 @@ public class smsListActivity extends AppCompatActivity {
         list_show.setAdapter(spa);
     }
 
-    private void goToDetails(){
-        final EditText smsId = (EditText)findViewById(R.id.sms_id);
-        int mesId = Integer.parseInt(smsId.getText().toString());
-        Intent intent = new Intent(this, smsDetailActivity.class);
-        intent.putExtra(SEE_SMS_DETAILS, seeMessage(mesId).toString());
-        startActivity(intent);
-
-    }
 
     private StringBuilder seeMessage(long mid){
         /*new AsyncTask<String, Void, Void>() {

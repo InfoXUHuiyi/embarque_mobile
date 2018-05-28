@@ -18,44 +18,6 @@
         </ListView>
 
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="149dp"
-            android:layout_height="19dp"
-            android:text="@string/sms_failed"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.017"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/sms_id"
-            android:clickable="true"
-            android:text="@string/sms"
-            android:textAppearance="@android:style/TextAppearance.Material.Large"
-            tools:layout_editor_absoluteX="5dp"
-            tools:layout_editor_absoluteY="34dp" />
-
-        <EditText
-            android:id="@+id/sms_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="@string/sms_id" />
-
-        <Button
-            android:id="@+id/see_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/textView2"
-            android:layout_toEndOf="@+id/sms_id"
-            android:text="@string/see_details" />
-
     </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

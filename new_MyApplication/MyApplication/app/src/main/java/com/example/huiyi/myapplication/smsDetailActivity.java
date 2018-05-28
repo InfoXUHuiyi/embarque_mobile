@@ -1,6 +1,7 @@
 package com.example.huiyi.myapplication;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -46,7 +47,7 @@ public class smsDetailActivity extends AppCompatActivity {
             }
         });
 
-        final Button reSentButton = (Button)findViewById(R.id.delete);
+        final Button reSentButton = (Button)findViewById(R.id.resent);
         reSentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,11 +61,16 @@ public class smsDetailActivity extends AppCompatActivity {
             }
         });
 
-        final Button locateButton = (Button)findViewById(R.id.delete);
+        final Button locateButton = (Button)findViewById(R.id.locate);
         locateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String adr = "";
+                Intent geoIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + adr));
 
+                if (geoIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(geoIntent);
+                }
             }
         });
     }
