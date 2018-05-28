@@ -9,7 +9,7 @@ public class Send {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
-    public int number;
+    public String number;
     public String content;
     public String address;
     public String date;

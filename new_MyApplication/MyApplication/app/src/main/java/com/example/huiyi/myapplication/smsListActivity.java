@@ -59,6 +59,7 @@ public class smsListActivity extends AppCompatActivity {
                         item.put("content", sms.content);
                         item.put("address", sms.address);
                         item.put("date", sms.date);
+                        item.put("cle1", sms.cle1);
                         data.add(item);
                     }
                 }
@@ -68,35 +69,9 @@ public class smsListActivity extends AppCompatActivity {
         }.execute(status);
 
         SimpleAdapter spa = new SimpleAdapter(this, data, R.layout.list_item,
-                new String[]{"id","content"}, new int[]{R.id.id,R.id.content});
+                new String[]{"id","number","content","date"}, new int[]{R.id.id,R.id.number,R.id.content,R.id.date});
 
         list_show.setAdapter(spa);
-    }
-
-
-    private StringBuilder seeMessage(long mid){
-        /*new AsyncTask<String, Void, Void>() {
-            @Override
-            protected Void doInBackground(String... numbers) {
-                //int sid = smsdb.sendDao().getId().get(0).content;
-                String newcontent = "from database:" + smsdb.sendDao().getSentSMSById(send.id).get(0).content + "/?" + send.id;
-                smsManager.sendTextMessage(numbers[0], null, newcontent, null, null);
-
-                return null;
-            }
-        }.execute(number);*/
-
-        StringBuilder s = new StringBuilder();
-        String msg = "content:blablabla";
-        String pho = "0600006666";
-        String adr = "930 Route des Colles,06410 Biot";
-        s.append(msg);
-        s.append("\r\n");
-        s.append(pho);
-        s.append("\r\n");
-        s.append(adr);
-
-        return s;
     }
 
     private void getDetials(String sid){
@@ -114,9 +89,14 @@ public class smsListActivity extends AppCompatActivity {
 
                 s.append(sms.content);
                 s.append("\r\n");
-                s.append(Integer.toString(sms.number));
+                s.append(sms.number);
                 s.append("\r\n");
-                s.append(sms.address);
+                //s.append(sms.address);
+                s.append("1047 chemin des ames du purgatoire");
+                s.append("\r\n");
+                s.append(sms.id);
+                s.append("\r\n");
+                s.append(sms.cle1);
 
                 intent.putExtra(SEE_SMS_DETAILS, s.toString());
                 startActivity(intent);

@@ -21,7 +21,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -329,6 +331,12 @@ public class MainActivity extends AppCompatActivity {
         final SmsManager smsManager = SmsManager.getDefault();
         send.cle1 = (int) (Math.random() * 11);
         send.content = encrypt(content, send.cle1);
+        send.number = number;
+        send.address = "";
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date curDate = new Date(System.currentTimeMillis());
+        send.date = formatter.format(curDate);
 
         new AsyncTask<Send, Void, Void>() {
             @Override
@@ -339,6 +347,8 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
         }.execute(send);
+
+        
 
         new AsyncTask<String, Void, Void>() {
             @Override

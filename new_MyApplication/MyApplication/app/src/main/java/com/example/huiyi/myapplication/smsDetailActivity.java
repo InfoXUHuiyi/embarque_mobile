@@ -2,6 +2,7 @@ package com.example.huiyi.myapplication;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
@@ -11,9 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class smsDetailActivity extends AppCompatActivity {
-
+    private SMSDatabase smsdb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        smsdb = SMSDatabase.getDatabase(getApplicationContext());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms_detail);
 
@@ -31,20 +33,24 @@ public class smsDetailActivity extends AppCompatActivity {
         textView1.setText(phone);
 
         String adr = strs[2];
+        final String sid = strs[3];
+        String key = strs[4];
 
         final Button deleteButton = (Button)findViewById(R.id.delete);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
-                delete message here
-                 */
+                /* delete message here*/
+                new AsyncTask<String, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(String... sids) {
+                        long smsId = Integer.parseInt(sids[0]);
+                        Send deleteSMS = smsdb.sendDao().getSentSMSById(smsId).get(0);
+                        smsdb.sendDao().deleteSMS(deleteSMS);
 
-
-
-
-
-
+                        return null;
+                    }
+                }.execute(sid);
 
             }
         });
