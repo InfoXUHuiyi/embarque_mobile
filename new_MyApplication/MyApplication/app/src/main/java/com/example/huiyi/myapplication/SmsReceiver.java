@@ -18,7 +18,8 @@ public class SmsReceiver extends BroadcastReceiver {
     private String sender;
     public static String adrSender;
     private static String messagecode = "";
-//    public static String smsRecu = "";
+    public static String decryptSms ;
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -107,7 +108,9 @@ public class SmsReceiver extends BroadcastReceiver {
                             String messageWorld = messagecode.substring(mesbegin,mesend);
 //                            int messageKey = Integer.parseInt(messagecode.substring(meskey)+1);
 //                            if(clef == messageKey){
-                                Toast.makeText(context,decrypt(messageWorld,clef), Toast.LENGTH_LONG).show();
+
+                                //Toast.makeText(context,decrypt(messageWorld,clef), Toast.LENGTH_LONG).show();
+                                decryptSms = decrypt(messageWorld,clef);
 //                            }
 
 

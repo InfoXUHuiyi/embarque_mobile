@@ -15,4 +15,6 @@
     <string name="locate">locate</string>
     <string name="see_details">see details</string>
     <string name="sms_id">1</string>
+    <string name="decrypt_sms">decrypt sms</string>
+
 </resources>

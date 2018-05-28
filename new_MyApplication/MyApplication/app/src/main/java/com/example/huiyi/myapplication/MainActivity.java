@@ -1,6 +1,7 @@
 package com.example.huiyi.myapplication;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -51,6 +52,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mapButtonClicked();
+            }
+        });
+
+        final Button decryptSMSButton = findViewById(R.id.decrypt_sms);
+        decryptSMSButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (SmsReceiver.decryptSms!=null){
+                decryptSMSClick(SmsReceiver.decryptSms);
+                }else { Toast.makeText(getApplicationContext(), "NOT RECEIVED", Toast.LENGTH_SHORT).show();}
             }
         });
 
@@ -123,9 +134,20 @@ public class MainActivity extends AppCompatActivity {
             array[i] = newChar;
         }
 
+
+
         //字符数组转换成String
         return new String(array);
     }
+
+    public void decryptSMSClick(String input){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("The latest decryption ");
+        builder.setMessage(input);
+        builder.setPositiveButton("OK",null);
+        builder.show();
+    }
+
 
     private void smsButtonClicked() {
 //        if ((ContextCompat.checkSelfPermission(MainActivity.this, SEND_SMS) != PERMISSION_GRANTED) ||
