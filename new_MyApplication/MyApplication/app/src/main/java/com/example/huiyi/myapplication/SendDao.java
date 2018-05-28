@@ -1,10 +1,12 @@
 package com.example.huiyi.myapplication;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -18,9 +20,9 @@ public interface SendDao {
     @Query("SELECT * FROM send WHERE send.id = :id")
     List<Send> getSentSMSById(long id);
 
-    @Query("SELECT * FROM send WHERE send.content = :content")
-    List<Send> getId(String content);
-
     @Query("SELECT * FROM send")
     List<Send> getAllSMS();
+
+    @Query("SELECT * FROM send,status WHERE send.id = status.sid and status.status = :status")
+    List<Send> getSMSByStatus(String status);
 }

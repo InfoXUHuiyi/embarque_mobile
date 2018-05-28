@@ -14,5 +14,7 @@ public class Send {
 //    public String envoye;
 //    public String ack_recu;
 //    public String code_recu;
-
+    public long getId() {
+        return id;
+    }
 }

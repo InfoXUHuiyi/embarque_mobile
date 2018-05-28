@@ -21,6 +21,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.RECEIVE_SMS;
 import static android.Manifest.permission.SEND_SMS;
@@ -171,15 +174,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkResceiveSms(){
-        Intent intent = new Intent(this, smsListActivity.class);
-        String message = getMessaage().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
+        final Intent intent = new Intent(this, smsListActivity.class);
+
+        //String message = getMessaage().toString();
+        //intent.putExtra(EXTRA_MESSAGE, messages);
+        intent.putExtra(EXTRA_MESSAGE, "all");
         startActivity(intent);
     }
     private StringBuilder getMessaage(){
-        /*
-            get information from database and put them in the stringBuilder
-         */
         StringBuilder stringBuilder = new StringBuilder();
         String meg1 = "sms1: hello world";
         String meg2 = "sms2: how are you";
