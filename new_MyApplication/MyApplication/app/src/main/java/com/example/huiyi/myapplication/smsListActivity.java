@@ -55,9 +55,10 @@ public class smsListActivity extends AppCompatActivity {
                     for (Send sms : messages) {
                         HashMap<String, Object> item = new HashMap<String, Object>();
                         item.put("id", sms.id);
-                        //item.put("number", sms.number);
+                        item.put("number", sms.number);
                         item.put("content", sms.content);
-                        //item.put("date", sms.date);
+                        item.put("address", sms.address);
+                        item.put("date", sms.date);
                         data.add(item);
                     }
                 }
@@ -98,11 +99,32 @@ public class smsListActivity extends AppCompatActivity {
         return s;
     }
 
-    private void viewDetails(String sid){
-        int mesId = Integer.parseInt(sid);
-        Intent intent = new Intent(this, smsDetailActivity.class);
-        intent.putExtra(SEE_SMS_DETAILS, seeMessage(mesId).toString());
-        startActivity(intent);
+    private void getDetials(String sid){
+        String number = sid;
+
+        final Intent intent = new Intent(this, smsDetailActivity.class);
+
+        new AsyncTask<String, Void, Void>() {
+            @Override
+            protected Void doInBackground(String... sids) {
+                long sid = Integer.parseInt(sids[0]);
+                Send sms = smsdb.sendDao().getSentSMSById(sid).get(0);
+
+                final StringBuilder s = new StringBuilder();
+
+                s.append(sms.content);
+                s.append("\r\n");
+                s.append(Integer.toString(sms.number));
+                s.append("\r\n");
+                s.append(sms.address);
+
+                intent.putExtra(SEE_SMS_DETAILS, s.toString());
+                startActivity(intent);
+
+                return null;
+            }
+        }.execute(sid);
+
     }
 
     public final class list_listener implements AdapterView.OnItemClickListener {
@@ -115,7 +137,7 @@ public class smsListActivity extends AppCompatActivity {
             HashMap sms = (HashMap)lView.getItemAtPosition(arg2);
 
             this.sid = sms.get("id").toString();
-            viewDetails(sid);
+            getDetials(sid);
         }
     }
 }

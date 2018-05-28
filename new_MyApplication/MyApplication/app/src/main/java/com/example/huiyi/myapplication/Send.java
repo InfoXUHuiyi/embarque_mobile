@@ -9,9 +9,12 @@ public class Send {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
+    public int number;
     public String content;
+    public String address;
+    public String date;
     public int cle1;
-//    public String envoye;
+    //    public String envoye;
 //    public String ack_recu;
 //    public String code_recu;
     public long getId() {
