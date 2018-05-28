@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class smsDetailActivity extends AppCompatActivity {
 
@@ -18,12 +20,12 @@ public class smsDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String string = intent.getStringExtra(smsListActivity.SEE_SMS_DETAILS);
         String[] strs = string.split("\r\n");
-        String message = strs[0];
+        final String message = strs[0];
         // Capture the layout's TextView and set the string as its text
         TextView textView = findViewById(R.id.sms_detail);
         textView.setText(message);
 
-        String phone = strs[1];
+        final String phone = strs[1];
         // Capture the layout's TextView and set the string as its text
         TextView textView1 = findViewById(R.id.number);
         textView1.setText(phone);
@@ -54,8 +56,9 @@ public class smsDetailActivity extends AppCompatActivity {
                 /*
                 re-sent message
                  */
-
-
+                SmsManager smsManager =SmsManager.getDefault();
+                smsManager.sendTextMessage(phone,null,message,null,null);
+                Toast.makeText(getApplicationContext(), "message has been sent", Toast.LENGTH_SHORT).show();
 
 
             }
