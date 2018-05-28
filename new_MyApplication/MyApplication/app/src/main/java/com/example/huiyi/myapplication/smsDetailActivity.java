@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class smsDetailActivity extends AppCompatActivity {
     private SMSDatabase smsdb;
     @Override
@@ -32,9 +35,9 @@ public class smsDetailActivity extends AppCompatActivity {
         TextView textView1 = findViewById(R.id.number);
         textView1.setText(phone);
 
-        String adr = strs[2];
+        final String adr = strs[2];
         final String sid = strs[3];
-        String key = strs[4];
+//        String key = strs[4];
 
         final Button deleteButton = (Button)findViewById(R.id.delete);
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -62,8 +65,9 @@ public class smsDetailActivity extends AppCompatActivity {
                 /*
                 re-sent message
                  */
+                String newmessage = "from database:" + message +"/?" + sid;
                 SmsManager smsManager =SmsManager.getDefault();
-                smsManager.sendTextMessage(phone,null,message,null,null);
+                smsManager.sendTextMessage(phone,null,newmessage,null,null);
                 Toast.makeText(getApplicationContext(), "message has been sent", Toast.LENGTH_SHORT).show();
 
 
@@ -74,7 +78,6 @@ public class smsDetailActivity extends AppCompatActivity {
         locateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String adr = "";
                 Intent geoIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + adr));
 
                 if (geoIntent.resolveActivity(getPackageManager()) != null) {
@@ -83,4 +86,6 @@ public class smsDetailActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

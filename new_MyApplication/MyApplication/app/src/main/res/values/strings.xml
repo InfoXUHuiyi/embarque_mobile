@@ -11,9 +11,8 @@
     <string name="delete">Delete</string>
     <string name="resent">resent</string>
     <string name="locate">locate</string>
-    <string name="see_details">see details</string>
     <string name="sms_id">1</string>
     <string name="decrypt_sms">decrypt sms</string>
-    <string name="check_sms">failed sms</string>
+    <string name="check_sms">manage sms</string>
 
 </resources>
